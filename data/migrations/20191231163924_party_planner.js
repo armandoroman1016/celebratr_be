@@ -54,6 +54,7 @@ exports.up = function(knex) {
             .notNullable()
         event
             .boolean('private')
+            .defaultTo(0)
             .notNullable()
         event
             .string('host_id')
@@ -71,6 +72,105 @@ exports.up = function(knex) {
             .inTable('event_themes')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
+    })
+    .createTable('guests', (guest) => {
+        guest
+            .string('id')
+            .unique()
+            .notNullable()
+            .primary();
+        guest
+            .string('event_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('events')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+        guest
+            .string('user_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('users')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+    })
+    .createTable('to_do', (task) => {
+        task
+            .string('id')
+            .unique()
+            .notNullable()
+            .primary()
+        task
+            .string('name')
+            .notNullable()
+        task
+            .string('notes', 1000)
+            .nullable()
+        task
+            .boolean()
+            .defaultTo(0)
+        task
+            .string('event_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('events')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+    })
+    .createTable('vendors', (vendor) => {
+        vendor
+            .string('id')
+            .unique()
+            .notNullable()
+            .primary()
+        vendor
+            .float('cost')
+        vendor
+            .string('notes', 1000)
+        vendor
+            .boolean('purchased')
+            .defaultTo(0)
+        vendor
+            .string('event_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('events')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+    })
+    .createTable('shopping_category', (category) => {
+        category
+            .string('id')
+            .unique()
+            .notNullable()
+            .primary()
+        category
+            .string('name', 86)
+            .unique()
+            .notNullable()
+    })
+    .createTable('shopping_item', (item) => {
+        item
+            .string('id')
+            .unique()
+            .notNullable()
+            .primary()
+        item
+            .string('name', 86)
+        item
+            .string('event_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('events')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+
+
     })
 };
 
