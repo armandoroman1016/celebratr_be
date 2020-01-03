@@ -8,13 +8,13 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         user
-            .string('first_name')
+            .string('first_name', 48)
             .notNullable()
         user
-            .string('last_name')
+            .string('last_name', 48)
             .notNullable()
         user
-            .string('password')
+            .string('password', 48)
             .notNullable()
     })
     .createTable('event_themes', (theme) => {
@@ -24,7 +24,7 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         theme
-            .string('name')
+            .string('name', 128)
             .unique()
             .notNullable()
     })
@@ -41,16 +41,16 @@ exports.up = function(knex) {
             .integer('budget')
             .notNullable()
         event
-            .string('city')
+            .string('city', 128)
             .notNullable()
         event
-            .string('state')
+            .string('state', 128)
             .notNullable()
         event
-            .string('address')
+            .string('address', 128)
             .notNullable()
         event
-            .integer('zip-code')
+            .integer('zip-code', 10)
             .notNullable()
         event
             .boolean('private')
@@ -67,7 +67,6 @@ exports.up = function(knex) {
         event
             .string('theme_id')
             .unsigned()
-            .notNullable()
             .references('id')
             .inTable('event_themes')
             .onUpdate('CASCADE')
@@ -103,13 +102,13 @@ exports.up = function(knex) {
             .notNullable()
             .primary()
         task
-            .string('name')
+            .string('name', 128)
             .notNullable()
         task
             .string('notes', 1000)
             .nullable()
         task
-            .boolean()
+            .boolean('completed')
             .defaultTo(0)
         task
             .string('event_id')
@@ -149,7 +148,7 @@ exports.up = function(knex) {
             .notNullable()
             .primary()
         category
-            .string('name', 86)
+            .string('name', 96)
             .unique()
             .notNullable()
     })
@@ -160,7 +159,7 @@ exports.up = function(knex) {
             .notNullable()
             .primary()
         item
-            .string('name', 86)
+            .string('name', 128)
         item
             .string('event_id')
             .unique()
@@ -169,11 +168,31 @@ exports.up = function(knex) {
             .inTable('events')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
-
-
+        item
+            .string('shopping_category_id')
+            .unique()
+            .notNullable()
+            .references('id')
+            .inTable('shopping_category')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+        item
+            .boolean('purchased')
+            .defaultTo(0)
+        item
+            .string('notes', 1000)
     })
 };
 
 exports.down = function(knex) {
-  
+    return knex.schema
+        .dropTableIfExists('shopping_item')
+        .dropTableIfExists('shopping_category')
+        .dropTableIfExists('vendors')
+        .dropTableIfExists('to_do')
+        .dropTableIfExists('guests')
+        .dropTableIfExists('events')
+        .dropTableIfExists('event_themes')
+        .dropTableIfExists('users')
+        
 };
