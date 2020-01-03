@@ -8,6 +8,10 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         user
+            .string('email', 96)
+            .notNullable()
+            .unique();
+        user
             .string('first_name', 48)
             .notNullable()
         user
@@ -194,5 +198,5 @@ exports.down = function(knex) {
         .dropTableIfExists('events')
         .dropTableIfExists('event_themes')
         .dropTableIfExists('users')
-        
+
 };
