@@ -3,8 +3,8 @@ const db = require('../data/dbConfig')
 module.exports = {
     find,
     add,
-    findById
-
+    findById,
+    findByHostId
 }
 
 function find(){
@@ -16,6 +16,13 @@ function find(){
 function add(values){
     return db('events')
         .insert(values);
+}
+
+function findByHostId(userId){
+
+    return db('events')
+        .where({host_id: userId});
+        
 }
 
 function findById(id){
