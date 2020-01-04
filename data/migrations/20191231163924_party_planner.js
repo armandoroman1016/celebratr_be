@@ -39,27 +39,46 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         event
+            .string('name', 128)
+            .notNullable()
+        event
             .date('date')
             .notNullable()
+        event
+            .string('start_time', 128)
+            .notNullable()
+        event
+            .string('end_time', 128)
         event
             .integer('budget')
             .notNullable()
         event
-            .string('city', 128)
+            .string('location')
             .notNullable()
-        event
-            .string('state', 128)
-            .notNullable()
-        event
-            .string('address', 128)
-            .notNullable()
-        event
-            .integer('zip-code', 10)
-            .notNullable()
+        // event
+        //     .string('city', 128)
+        //     .notNullable()
+        // event
+        //     .string('state', 128)
+        //     .notNullable()
+        // event
+        //     .string('address', 128)
+        //     .notNullable()
+        // event
+        //     .integer('zip-code', 10)
+        //     .notNullable()
         event
             .boolean('private')
             .defaultTo(0)
-            .notNullable()
+            .notNullable();
+        event
+            .integer('adult_guests')
+            .notNullable();
+        event
+            .integer('child_guests')
+            .notNullable();
+        event
+            .string('background_color', 10)
         event
             .string('host_id')
             .unsigned()
