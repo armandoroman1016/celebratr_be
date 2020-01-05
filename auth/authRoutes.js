@@ -92,7 +92,7 @@ router.post('/login', (req, res) => {
                     const token = generateToken(user)
                     delete user.password
 
-                    res.status(200).json({user: user})
+                    res.status(200).json({user: user, token: token})
                 }
 
             })

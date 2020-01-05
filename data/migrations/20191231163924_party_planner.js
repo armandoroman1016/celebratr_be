@@ -21,17 +21,6 @@ exports.up = function(knex) {
             .string('password', 48)
             .notNullable()
     })
-    .createTable('event_themes', (theme) => {
-        theme
-            .string('id')
-            .unique()
-            .primary()
-            .notNullable()
-        theme
-            .string('name', 128)
-            .unique()
-            .notNullable()
-    })
     .createTable('events', (event) => {
         event
             .string('id')
@@ -55,14 +44,14 @@ exports.up = function(knex) {
         event
             .string('location')
             .notNullable()
+        event
+            .string('address', 128)
+            .notNullable()
         // event
         //     .string('city', 128)
         //     .notNullable()
         // event
         //     .string('state', 128)
-        //     .notNullable()
-        // event
-        //     .string('address', 128)
         //     .notNullable()
         // event
         //     .integer('zip-code', 10)
@@ -80,6 +69,8 @@ exports.up = function(knex) {
         event
             .string('background_color', 10)
         event
+            .string('theme', 128)
+        event
             .string('host_id')
             .unsigned()
             .notNullable()
@@ -87,13 +78,7 @@ exports.up = function(knex) {
             .inTable('users')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
-        event
-            .string('theme_id')
-            .unsigned()
-            .references('id')
-            .inTable('event_themes')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
+
     })
     .createTable('guests', (guest) => {
         guest
