@@ -6,6 +6,7 @@ const Events = require('../helpers/eventHelpers')
 router.post('/:userId/add', (req, res) => {
 
     let data = req.body
+
     const { userId } = req.params
 
     if( data.name && 
@@ -33,12 +34,13 @@ router.post('/:userId/add', (req, res) => {
                 end_time: data.endTime,
                 budget: data.budget,
                 location: data.location,
+                address: data.address,
                 private: data.private,
                 adult_guests: data.adultGuests,
                 child_guests: data.childGuests,
                 background_color: data.backgroundColor,
-                host_id: userId,
-                theme_id: data.themeId
+                theme: data.theme,
+                host_id: userId
 
             }
 
@@ -54,7 +56,6 @@ router.post('/:userId/add', (req, res) => {
             // adding event
             Events.add(packet)
                 .then( event => {
-                    console.log(event)
                     if(event){
                         res.status(201).json({event: event})
                     }else{
