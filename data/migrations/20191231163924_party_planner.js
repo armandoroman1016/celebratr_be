@@ -111,7 +111,6 @@ exports.up = function(knex) {
             .defaultTo(0)
         task
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')
@@ -133,7 +132,6 @@ exports.up = function(knex) {
             .defaultTo(0)
         vendor
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')
@@ -162,7 +160,6 @@ exports.up = function(knex) {
             .notNullable();
         item
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')

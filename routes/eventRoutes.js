@@ -3,7 +3,7 @@ const uuid = require('uuid/v4')
 const capitalize = require('../utils/capitalize')
 const Events = require('../helpers/eventHelpers')
 
-router.post('/:userId/add', (req, res) => {
+router.post('/:userId', (req, res) => {
 
     let data = req.body
 
