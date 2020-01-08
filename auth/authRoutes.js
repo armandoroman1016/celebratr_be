@@ -4,6 +4,7 @@ const router = require('express').Router()
 const uuid = require('uuid/v4')
 const Users = require('../helpers/authHelpers')
 const generateToken = require('../middleware/generateToken')
+const capitalize = require('../utils/capitalize')
 
 router.post('/register', ( req, res ) => {
     
@@ -27,6 +28,12 @@ router.post('/register', ( req, res ) => {
                     const hashedPass = bcrypt.hashSync(packet.password, 14)
                     packet.password = hashedPass
 
+                    console.log('newUser', packet)
+
+                    // normalizing names
+                    packet.firstName = capitalize(packet.firstName.trim())
+                    packet.lastName = capitalize(packet.lastName.trim())
+
                     const id = uuid()
 
                     finalPacket = {
@@ -36,7 +43,6 @@ router.post('/register', ( req, res ) => {
                         last_name: packet.lastName,
                         password: packet.password
                     }
-                    console.log('here', finalPacket)
 
                     Users.add(finalPacket)
                         .then(newUser => {
@@ -64,6 +70,33 @@ router.get('/', (req, res) => {
         .catch( err => {
             res.status(500).json(err)
         })
+})
+
+router.post('/login', (req, res) => {
+    const { email, password } = req.body
+
+    if (!email || !password){
+
+        res.status(400).json({message: 'Missing required credentials.'})
+
+    } else {
+
+        Users.findByEmail(email)
+            .then( user => {
+
+                if(!user || !bcrypt.compareSync(password, user.password)){
+                    res.status(406).json({message: 'Invalid email or password'})
+
+                }else if( user && bcrypt.compareSync(password, user.password)){
+
+                    const token = generateToken(user)
+                    delete user.password
+
+                    res.status(200).json({user: user, token: token})
+                }
+
+            })
+    }
 })
 
 module.exports = router

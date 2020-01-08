@@ -21,17 +21,6 @@ exports.up = function(knex) {
             .string('password', 48)
             .notNullable()
     })
-    .createTable('event_themes', (theme) => {
-        theme
-            .string('id')
-            .unique()
-            .primary()
-            .notNullable()
-        theme
-            .string('name', 128)
-            .unique()
-            .notNullable()
-    })
     .createTable('events', (event) => {
         event
             .string('id')
@@ -39,27 +28,39 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         event
+            .string('name', 128)
+            .notNullable()
+        event
             .date('date')
             .notNullable()
+        event
+            .string('start_time', 128)
+            .notNullable()
+        event
+            .string('end_time', 128)
         event
             .integer('budget')
             .notNullable()
         event
-            .string('city', 128)
-            .notNullable()
-        event
-            .string('state', 128)
+            .string('location')
             .notNullable()
         event
             .string('address', 128)
             .notNullable()
         event
-            .integer('zip-code', 10)
-            .notNullable()
-        event
             .boolean('private')
             .defaultTo(0)
-            .notNullable()
+            .notNullable();
+        event
+            .integer('adult_guests')
+            .notNullable();
+        event
+            .integer('child_guests')
+            .notNullable();
+        event
+            .string('background_color', 10)
+        event
+            .string('theme', 128)
         event
             .string('host_id')
             .unsigned()
@@ -68,13 +69,7 @@ exports.up = function(knex) {
             .inTable('users')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
-        event
-            .string('theme_id')
-            .unsigned()
-            .references('id')
-            .inTable('event_themes')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
+
     })
     .createTable('guests', (guest) => {
         guest
@@ -116,7 +111,6 @@ exports.up = function(knex) {
             .defaultTo(0)
         task
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')
@@ -138,24 +132,23 @@ exports.up = function(knex) {
             .defaultTo(0)
         vendor
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
     })
-    .createTable('shopping_category', (category) => {
-        category
-            .string('id')
-            .unique()
-            .notNullable()
-            .primary()
-        category
-            .string('name', 96)
-            .unique()
-            .notNullable()
-    })
+    // .createTable('shopping_category', (category) => {
+    //     category
+    //         .string('id')
+    //         .unique()
+    //         .notNullable()
+    //         .primary()
+    //     category
+    //         .string('name', 96)
+    //         .unique()
+    //         .notNullable()
+    // })
     .createTable('shopping_item', (item) => {
         item
             .string('id')
@@ -164,25 +157,26 @@ exports.up = function(knex) {
             .primary()
         item
             .string('name', 128)
+            .notNullable();
         item
             .string('event_id')
-            .unique()
             .notNullable()
             .references('id')
             .inTable('events')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
-        item
-            .string('shopping_category_id')
-            .unique()
-            .notNullable()
-            .references('id')
-            .inTable('shopping_category')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
+        // item
+        //     .string('shopping_category_id')
+        //     .unique()
+        //     .notNullable()
+        //     .references('id')
+        //     .inTable('shopping_category')
+        //     .onUpdate('CASCADE')
+        //     .onDelete('CASCADE');
         item
             .boolean('purchased')
             .defaultTo(0)
+            .notNullable();
         item
             .string('notes', 1000)
     })
