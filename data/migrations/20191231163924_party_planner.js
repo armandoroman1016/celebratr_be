@@ -12,13 +12,13 @@ exports.up = function(knex) {
             .notNullable()
             .unique();
         user
-            .string('first_name', 48)
+            .string('first_name', 196)
             .notNullable()
         user
-            .string('last_name', 48)
+            .string('last_name', 196)
             .notNullable()
         user
-            .string('password', 48)
+            .string('password', 196)
             .notNullable()
     })
     .createTable('events', (event) => {
@@ -31,7 +31,7 @@ exports.up = function(knex) {
             .string('name', 128)
             .notNullable()
         event
-            .date('date')
+            .string('date', 55)
             .notNullable()
         event
             .string('start_time', 128)
@@ -124,7 +124,7 @@ exports.up = function(knex) {
             .notNullable()
             .primary()
         vendor
-            .float('cost')
+            .integer('cost')
         vendor
             .string('notes', 1000)
         vendor
@@ -165,6 +165,8 @@ exports.up = function(knex) {
             .inTable('events')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
+        item
+            .integer('cost');
         // item
         //     .string('shopping_category_id')
         //     .unique()

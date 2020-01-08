@@ -2,6 +2,7 @@ const router = require('express').Router()
 const uuid = require('uuid/v4')
 const capitalize = require('../utils/capitalize')
 const Events = require('../helpers/eventHelpers')
+const packetCleanup = require('../utils/packetCleanup')
 
 router.post('/:userId', (req, res) => {
 
@@ -9,12 +10,13 @@ router.post('/:userId', (req, res) => {
 
     const { userId } = req.params
 
+    console.log(data)
     if( data.name && 
         data.date && 
         data.startTime &&
         data.budget && 
         data.location &&
-        data.private &&
+        data.address &&
         data.adultGuests ){
             
             const eventId = uuid()
@@ -22,17 +24,17 @@ router.post('/:userId', (req, res) => {
             data.location = capitalize(data.location)
 
             // setting events publicity for db
-            data.private = true ? 1 : 0
+            data.private = data.private ? 1 : 0
 
             // creating and shaping packet going into the DB
-            const packet = {
+            let packet = {
 
                 id: eventId,
                 name: data.name,
                 date: data.date,
                 start_time: data.startTime,
                 end_time: data.endTime,
-                budget: data.budget,
+                budget: Number(data.budget),
                 location: data.location,
                 address: data.address,
                 private: data.private,
@@ -44,14 +46,12 @@ router.post('/:userId', (req, res) => {
 
             }
 
+            console.log('48: ', packet)
+
             // deleting any undefined values in packet
-            for (const key in packet){
+            packet = packetCleanup(packet)
 
-                if(key === undefined || key === '' || key === null){
-                    delete key
-                }
-
-            }
+            console.log('59: ', packet)
 
             // adding event
             Events.add(packet)
