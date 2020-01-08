@@ -1,21 +1,19 @@
 module.exports = {
   development: {
-    client: 'sqlite3',
+    client: 'pg',
     useNullAsDefault: true,
-    connection: {
-      filename: './data/party_planner.db3'
+    connection: process.env.DATABASE_URL, 
+    useNullAsDefault: true,
+    "pool": {
+      "min":0,
+      "max":10
     },
     migrations: {
       directory: './data/migrations'
     },
     seeds: {
       directory: './data/seeds'
-    },
-    pool: {
-      afterCreate: (conn, done) => {
-        conn.run('PRAGMA foreign_keys = ON', done);
-      },
-    },
+    }
   },
   testing: {
     client: 'sqlite3',
