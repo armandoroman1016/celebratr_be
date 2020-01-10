@@ -18,7 +18,7 @@ exports.up = function(knex) {
             .string('last_name', 256)
             .notNullable()
         user
-            .string('password', 256)
+            .string('password')
             .notNullable()
     })
     .createTable('events', (event) => {

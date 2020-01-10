@@ -44,6 +44,12 @@ router.post('/register', ( req, res ) => {
                         password: packet.password
                     }
 
+                    console.log(finalPacket)
+
+                    for(key in finalPacket){
+                        console.log(`type of ${key}: `, typeof(key))
+                    }
+                    
                     Users.add(finalPacket)
                         .then(newUser => {
                             console.log('newUser', newUser)
