@@ -8,17 +8,17 @@ exports.up = function(knex) {
             .primary()
             .notNullable()
         user
-            .string('email', 96)
+            .string('email', 256)
             .notNullable()
             .unique();
         user
-            .string('first_name', 196)
+            .string('first_name', 256)
             .notNullable()
         user
-            .string('last_name', 196)
+            .string('last_name', 256)
             .notNullable()
         user
-            .string('password', 196)
+            .string('password', 256)
             .notNullable()
     })
     .createTable('events', (event) => {

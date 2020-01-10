@@ -13,6 +13,7 @@ router.get('/' , (req, res) => {
 })
 
 
+
 router.post('/:eventId', (req, res) => {
 
     const { eventId } = req.params
