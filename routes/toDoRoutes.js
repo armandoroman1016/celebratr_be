@@ -107,15 +107,13 @@ router.put('/:id', ( req, res ) => {
         }
 
         packet = packetCleanup(packet)
-        console.log('here', packet)
+
         ToDo.update(id, packet)
             .then((todo) => {
 
                 if(todo){
-                    res.status(204).json(todo)
-                }
-
-                else{
+                    res.status(204).json({updated: todo})
+                }else{
                     res.status(500)
                 }
 

@@ -15,9 +15,13 @@ function find(){
 
 }
 
-function add(values){
-    return db('shopping_item')
-        .insert(values);
+async function add(values){
+
+    const [newShopping] = await db('shopping_item')
+        .insert(values)
+        .returning('*')
+
+    return newShopping
 
 }
 
@@ -27,11 +31,14 @@ function findByEventId(eventId){
 
 }
 
-function update(id, values){
-    return db('shopping_item')
+async function update(id, values){
+    const [ updated ] = await db('shopping_item')
         .where({id: id})
         .first()
-        .update(values);
+        .update(values)
+        .returning('*')
+    
+    return updated
 
 }
 

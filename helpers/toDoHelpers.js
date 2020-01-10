@@ -23,18 +23,27 @@ function findByEventId(eventId){
 
 }
 
-function add(values){
+async function add(values){
 
-    return db('to_do')
-        .insert(values);
+
+    const [newToDo] = await db('to_do')
+        .insert(values)
+        .returning('*');
+    
+    return newToDo
 
 }
 
-function update(id, values){
+async function update(id, values){
 
-    return db('to_do')
+    console.log('here', values)
+
+    const [updated] = await db('to_do')
         .where({id: id})
-        .update(values);
+        .update(values)
+        .returning('*');
+
+    return updated
 
 }
 

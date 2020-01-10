@@ -3,6 +3,7 @@ const Shopping = require('../helpers/shoppingHelpers')
 const Events = require('../helpers/eventHelpers')
 const uuid = require('uuid/v4')
 const packetCleanup = require('../utils/packetCleanup')
+const capitalize = require('../utils/capitalize')
 
 router.get('/' , (req, res) => {
     Shopping.find()
@@ -10,6 +11,7 @@ router.get('/' , (req, res) => {
         .catch( err => res.status(500))
 
 })
+
 
 
 router.post('/:eventId', (req, res) => {
@@ -40,8 +42,8 @@ router.post('/:eventId', (req, res) => {
                         name: values.name,
                         event_id: eventId,
                         purchased: values.purchased ? 1 : 0,
-                        notes: values.notes
-
+                        notes: values.notes,
+                        cost: values.cost
                     }
 
                     // deleting any undefined or null values in packet
@@ -73,6 +75,46 @@ router.post('/:eventId', (req, res) => {
             .catch(err => res.status(500))
     })
 
+    router.put('/:itemId', ( req, res ) => {
+
+        const { itemId } = req.params
+
+        let shoppingItem = req.body
+
+        if(shoppingItem.name){
+
+            shoppingItem.purchased = shoppingItem.purchased ? 1 : 0
+
+            let packet = {
+                id: itemId,
+                name: shoppingItem.name,
+                notes: shoppingItem.notes,
+                purchased: shoppingItem.purchased,
+                cost: shoppingItem.cost,
+                event_id: shoppingItem.eventId
+            }
+
+            packet = packetCleanup(packet)
+
+            console.log('99: packet', packet)
+            Shopping.update(itemId, packet)
+                .then((todo) => {
+                    
+                    if(todo){
+                        res.status(204).json({updated: todo})
+                    }else{
+                        res.status(500)
+                    }
+
+                })
+                .catch(err => res.status(500))
+
+        }else{
+
+            res.status(400).json({message: 'To do list item name is required'})
+
+        }
+    })
 
 
 module.exports = router

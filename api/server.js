@@ -8,9 +8,10 @@ const toDoRoutes = require('../routes/toDoRoutes')
 
 const server =  express()
 
-server.use(express.json())
-server.use(helmet())
-server.use(cors())
+server.use(cors());
+server.use(helmet());
+
+server.use(express.json());
 server.use('/api/auth', authRoutes)
 server.use('/api/events', eventRoutes)
 server.use('/api/shopping', shoppingRoutes)
