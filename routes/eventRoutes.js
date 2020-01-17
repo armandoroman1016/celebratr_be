@@ -10,7 +10,6 @@ router.post('/:userId', (req, res) => {
 
     const { userId } = req.params
 
-    console.log(data)
     if( data.name && 
         data.date && 
         data.startTime &&
@@ -46,12 +45,9 @@ router.post('/:userId', (req, res) => {
 
             }
 
-            console.log('48: ', packet)
-
             // deleting any undefined values in packet
             packet = packetCleanup(packet)
 
-            console.log('59: ', packet)
 
             // adding event
             Events.add(packet)
@@ -85,6 +81,68 @@ router.get('/:userId', ( req, res ) => {
             }
         })
         .catch( err => res.status(500))
+})
+
+router.put('/:eventId', ( req, res) => {
+
+    const { eventId } = req.params
+
+    let data = req.body
+
+    if( data.name && 
+        data.date && 
+        data.startTime &&
+        data.budget && 
+        data.location &&
+        data.address &&
+        data.adultGuests ){
+            
+            data.name = capitalize(data.name)
+            data.location = capitalize(data.location)
+
+            // setting events publicity for db
+            data.private = data.private ? 1 : 0
+
+            // creating and shaping packet going into the DB
+            let packet = {
+
+                id: eventId,
+                name: data.name,
+                date: data.date,
+                start_time: data.startTime,
+                end_time: data.endTime,
+                budget: Number(data.budget),
+                location: data.location,
+                address: data.address,
+                private: data.private,
+                adult_guests: data.adultGuests,
+                child_guests: data.childGuests,
+                background_color: data.backgroundColor,
+                theme: data.theme,
+                host_id: data.hostId
+
+            }
+
+            Events.update(eventId, packet)
+                .then((event) => {
+                    
+                    if(event){
+                        res.status(204).json({updated: event})
+
+                    }else{
+
+                        res.status(500).json({message: 'hello'})
+                    }
+
+                })
+                .catch(err => res.status(500))
+
+        }else{
+
+            res.status(400).json({message: 'Event missing required fields'})
+
+        }
+
 })
 
 router.get('/', (req, res) => {

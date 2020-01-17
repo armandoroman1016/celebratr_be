@@ -43,7 +43,7 @@ async function update(id, values){
         .where({id: id})
         .first()
         .update(values)
-        .returning('*')
+        .returning('*');
 
     return updated
     
