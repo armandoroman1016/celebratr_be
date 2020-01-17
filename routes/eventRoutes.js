@@ -145,6 +145,22 @@ router.put('/:eventId', ( req, res) => {
 
 })
 
+router.delete('/:eventId', ( req, res ) => {
+
+    const { eventId } = req.params
+
+    Events.remove(eventId)
+        .then((del) => {
+            if(del){
+                res.status(204)
+            }else{
+                res.status(500).json({message: 'Your request was processed but unable to be fulfilled'})
+            }
+        })
+        .catch( err => res.status(500).json(err))
+
+})
+
 router.get('/', (req, res) => {
 
     Events.find()

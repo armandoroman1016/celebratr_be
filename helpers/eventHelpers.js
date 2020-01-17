@@ -6,7 +6,8 @@ module.exports = {
     add,
     findById,
     findByHostId,
-    update
+    update,
+    remove
 
 }
 
@@ -47,4 +48,11 @@ async function update(id, values){
 
     return updated
     
+}
+
+function remove(id){
+    return db('events')
+    .where({id: id})
+    .first()
+    .del();
 }
