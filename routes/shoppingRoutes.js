@@ -20,6 +20,8 @@ router.post('/:eventId', (req, res) => {
     
     let values = req.body
 
+    console.log('values', values)
+
     // if name is missing from request body return 400 message
     if( !values.name ){
         res.status(400).json({message: 'missing a name for the shopping item'})
@@ -37,13 +39,14 @@ router.post('/:eventId', (req, res) => {
 
                     const id = uuid()
 
+                
                     let packet = {
                         id: id,
                         name: values.name,
                         event_id: eventId,
                         purchased: values.purchased ? 1 : 0,
                         notes: values.notes,
-                        cost: values.cost
+                        cost: Number(values.cost)
                     }
 
                     // deleting any undefined or null values in packet
@@ -86,22 +89,20 @@ router.post('/:eventId', (req, res) => {
             shoppingItem.purchased = shoppingItem.purchased ? 1 : 0
 
             let packet = {
-                id: itemId,
+                id: itemId, 
                 name: shoppingItem.name,
                 notes: shoppingItem.notes,
                 purchased: shoppingItem.purchased,
-                cost: shoppingItem.cost,
+                cost: Number(shoppingItem.cost),
                 event_id: shoppingItem.eventId
             }
 
             packet = packetCleanup(packet)
 
-            console.log('99: packet', packet)
             Shopping.update(itemId, packet)
                 .then((todo) => {
-                    
                     if(todo){
-                        res.status(204).json({updated: todo})
+                        res.status(200).json({updated: todo})
                     }else{
                         res.status(500)
                     }

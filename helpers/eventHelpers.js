@@ -54,5 +54,5 @@ function remove(id){
     return db('events')
     .where({id: id})
     .first()
-    .del();
+    .delete();
 }
