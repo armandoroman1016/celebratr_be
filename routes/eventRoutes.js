@@ -125,13 +125,15 @@ router.put('/:eventId', ( req, res) => {
 
             Events.update(eventId, packet)
                 .then((event) => {
-                    
+                    console.log('here', event)
+
                     if(event){
-                        res.status(204).json({updated: event})
+                        
+                        res.status(200).json({updated: event})
 
                     }else{
 
-                        res.status(500).json({message: 'hello'})
+                        res.status(404).json({message: "the item with that id doesn't exist"})
                     }
 
                 })
@@ -150,12 +152,9 @@ router.delete('/:eventId', ( req, res ) => {
     const { eventId } = req.params
 
     Events.remove(eventId)
-        .then((del) => {
-            if(del){
-                res.status(204)
-            }else{
-                res.status(500).json({message: 'Your request was processed but unable to be fulfilled'})
-            }
+        .then(del => {
+            console.log('del', del)
+            res.status(204).json({message: 'deleted successfully'})
         })
         .catch( err => res.status(500).json(err))
 

@@ -5,10 +5,17 @@ module.exports = {
     add,
     findByEventId,
     update,
-    remove
+    remove,
+    findByItemId
 }
 
+function findByItemId(id){
 
+    return db('shopping_item')
+    .where({id: id})
+    .first();
+
+}
 
 function find(){
     return db('shopping_item');
@@ -32,14 +39,15 @@ function findByEventId(eventId){
 }
 
 async function update(id, values){
-    const [ updated ] = await db('shopping_item')
+    await db('shopping_item')
         .where({id: id})
-        .first()
-        .update(values)
-        .returning('*')
+        .update(values);
     
-    return updated
+    const item = await findByItemId(id)
 
+    console.log(item)
+    
+    return item
 }
 
 function remove(id){
