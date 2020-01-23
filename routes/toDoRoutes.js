@@ -3,8 +3,9 @@ const ToDo = require('../helpers/toDoHelpers')
 const capitalize = require('../utils/capitalize')
 const uuid = require('uuid/v4')
 const packetCleanup = require('../utils/packetCleanup')
+const validateToken = require('../middleware/validateToken')
 
-router.get('/', (req, res) => {
+router.get('/', validateToken, (req, res) => {
 
     ToDo.find()
         .then( todos => {
@@ -16,7 +17,7 @@ router.get('/', (req, res) => {
 
 })
 
-router.post('/:eventId', (req, res) => {
+router.post('/:eventId', validateToken, (req, res) => {
 
     const { eventId } = req.params
 
@@ -38,6 +39,8 @@ router.post('/:eventId', (req, res) => {
             event_id: eventId
         }
 
+        packet.name = capitalize(packet.name)
+
         packet = packetCleanup(packet)
 
         ToDo.add(packet)
@@ -56,7 +59,7 @@ router.post('/:eventId', (req, res) => {
     }
 })
 
-router.get('/:eventId', (req, res) => {
+router.get('/:eventId', validateToken, (req, res) => {
 
     const { eventId } = req.params
 
@@ -86,7 +89,7 @@ router.get('/:eventId', (req, res) => {
         .catch( err => res.status(500))
 })
 
-router.put('/:id', ( req, res ) => {
+router.put('/:id', validateToken, ( req, res ) => {
 
     const { id } = req.params
 
@@ -105,6 +108,8 @@ router.put('/:id', ( req, res ) => {
             completed: toDoBody.completed,
             event_id: toDoBody.eventId
         }
+
+        packet.name = capitalize(packet.name)
 
         packet = packetCleanup(packet)
 
@@ -126,7 +131,7 @@ router.put('/:id', ( req, res ) => {
     }
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateToken, (req, res) => {
 
     const { id } = req.params
 

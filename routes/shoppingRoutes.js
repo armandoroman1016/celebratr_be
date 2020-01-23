@@ -4,17 +4,10 @@ const Events = require('../helpers/eventHelpers')
 const uuid = require('uuid/v4')
 const packetCleanup = require('../utils/packetCleanup')
 const capitalize = require('../utils/capitalize')
-
-router.get('/' , (req, res) => {
-    Shopping.find()
-        .then( list => res.status(200).json(list))
-        .catch( err => res.status(500))
-
-})
+const validateToken = require('../middleware/validateToken')
 
 
-
-router.post('/:eventId', (req, res) => {
+router.post('/:eventId', validateToken, (req, res) => {
 
     const { eventId } = req.params
     
@@ -49,6 +42,8 @@ router.post('/:eventId', (req, res) => {
                         cost: Number(values.cost)
                     }
 
+                    packet.name = capitalize(packet.name)
+
                     // deleting any undefined or null values in packet
 
                     packet = packetCleanup(packet)
@@ -61,7 +56,7 @@ router.post('/:eventId', (req, res) => {
         }
     })
 
-    router.get('/:eventId', ( req, res ) => {
+    router.get('/:eventId', validateToken, ( req, res ) => {
         const { eventId } = req.params
 
         Shopping.findByEventId(eventId)
@@ -78,7 +73,7 @@ router.post('/:eventId', (req, res) => {
             .catch(err => res.status(500))
     })
 
-    router.put('/:itemId', ( req, res ) => {
+    router.put('/:itemId', validateToken, ( req, res ) => {
 
         const { itemId } = req.params
 
@@ -96,6 +91,8 @@ router.post('/:eventId', (req, res) => {
                 cost: Number(shoppingItem.cost),
                 event_id: shoppingItem.eventId
             }
+
+            packet.name = capitalize(packet.name)
 
             packet = packetCleanup(packet)
 

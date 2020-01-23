@@ -6,6 +6,37 @@ const Users = require('../helpers/authHelpers')
 const generateToken = require('../middleware/generateToken')
 const capitalize = require('../utils/capitalize')
 
+
+/**
+ * @api {post} /api/auth/register Register Request
+ * @apiName Register
+ * @apiGroup Auth
+ *
+ *
+ * @apiSuccess {Object} user User
+ * @apiSuccess {String} token Token
+ *
+ * @apiParamExample Example Body:
+ * {
+ *	"fistName": "John",
+ *  "lastName": "Doe",
+ *  "email": "example1@example1.com",
+ *	"password": "password"
+ * }
+ *
+ * @apiSuccessExample Successful Response:
+ * HTTP/1.1 201 CREATED
+ * {
+ *  "user": {
+ *    "id": "cc1804a4-a517-4c36-b100-339b10195923",
+ *    "email": "John",
+ *    "first_name": "Doe",
+ *    "last_name": "example1@example1.com",
+ *  }, 
+ *  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+ * }
+ */
+
 router.post('/register', ( req, res ) => {
     
     let packet = req.body
@@ -68,15 +99,33 @@ router.post('/register', ( req, res ) => {
     }
 })
 
-router.get('/', (req, res) => {
-    Users.find()
-        .then(users =>{
-            res.status(200).json({users: users})
-        })
-        .catch( err => {
-            res.status(500).json(err)
-        })
-})
+/**
+ * @api {post} /api/auth/login Login Request
+ * @apiName Login
+ * @apiGroup Auth
+ *
+ *
+ * @apiSuccess {Object} user User
+ * @apiSuccess {String} token Token
+ *
+ * @apiParamExample Example Body:
+ * {
+ *	"email": "example1@example1.com",
+ *	"password": "password"
+ * }
+ *
+ * @apiSuccessExample Successful Response:
+ * HTTP/1.1 200 OK
+ * {
+ *  "user": {
+ *    "id": "cc1804a4-a517-4c36-b100-339b10195923",
+ *    "email": "John",
+ *    "first_name": "Doe",
+ *    "last_name": "example1@example1.com",
+ *  },
+ *  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+ * }
+ */
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body
