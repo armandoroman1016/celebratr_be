@@ -44,8 +44,6 @@ async function update(id, values){
         .update(values);
     
     const item = await findByItemId(id)
-
-    console.log(item)
     
     return item
 }

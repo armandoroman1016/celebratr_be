@@ -18,7 +18,11 @@ server.use('/api/shopping', shoppingRoutes)
 server.use('/api/todo', toDoRoutes)
 
 server.get('/', ( req, res ) =>{
-    res.status(200).json({message: 'Hello !'})
+    res.status(200).json({message: "Welcome to Celebratr's API !"})
 })
+
+server.use("/docs", express.static("./docs"));
+
+// server.use(express.static(path.join(__dirname, "public")));
 
 module.exports = server
