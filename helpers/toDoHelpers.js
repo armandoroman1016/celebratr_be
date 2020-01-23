@@ -6,7 +6,8 @@ module.exports = {
     findByEventId,
     add,
     update,
-    remove
+    remove,
+    findByItemId
 
 }
 
@@ -23,6 +24,14 @@ function findByEventId(eventId){
 
 }
 
+function findByItemId(id){
+
+    return db('to_do')
+    .where({id: id})
+    .first();
+
+}
+
 async function add(values){
 
 
@@ -36,14 +45,14 @@ async function add(values){
 
 async function update(id, values){
 
-    console.log('here', values)
 
-    const [updated] = await db('to_do')
+    await db('to_do')
         .where({id: id})
-        .update(values)
-        .returning('*');
+        .update(values);
 
-    return updated
+    const item = await findByItemId(id)
+
+    return item
 
 }
 

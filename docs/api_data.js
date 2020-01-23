@@ -172,7 +172,7 @@ define({ "api": [
   {
     "type": "delete",
     "url": "/api/event/:eventId",
-    "title": "Delete an event",
+    "title": "Delete An Event",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -263,7 +263,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Body:",
-          "content": "{\n    name: \"Event Name\",\n    date: \"2020-02-28\",\n    startTime: \"4 : 00 PM\"`,\n    endTime:  \"12 : 00 AM\",\n    budget: 3000,\n    location: \"Event Location\",\n    address: \"2020 Walnut Ave\",\n    private: true,\n    adultGuests: 30,\n    childGuests: 20,\n    backgroundColor: null,  \n    theme: null,\n    hostId: \"f97ccc1e-c543-42ac-84d8-cbdab63f9a1d\"\n}",
+          "content": "{\n    \"name\": \"Event Name\",\n    \"date\": \"2020-02-28\",\n    \"startTime\": \"4 : 00 PM\"`,\n    \"endTime\":  \"12 : 00 AM\",\n    \"budget\": 3000,\n    \"location\": \"Event Location\",\n    \"address\": \"2020 Walnut Ave\",\n    \"private\": true,\n    \"adultGuests\": 30,\n    \"childGuests\": 20,\n    \"backgroundColor\": null,  \n    \"theme\": null,\n    \"hostId\": \"f97ccc1e-c543-42ac-84d8-cbdab63f9a1d\"\n}",
           "type": "json"
         }
       ]
@@ -293,5 +293,298 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "./routes/eventRoutes.js",
     "groupTitle": "Events"
+  },
+  {
+    "type": "post",
+    "url": "/api/shopping/:eventId",
+    "title": "Create A Shopping Item",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "eventId",
+            "description": "<p>Id of event to create shopping item for</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Body:",
+          "content": "{\n\t \"name\": \"example\",\n\t \"notes\": \"none\",\n\t \"purchased\": false,\n\t \"cost\": 100\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "name": "Create",
+    "group": "Shopping",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "event",
+            "description": "<p>Object with item data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 201 Created\n{\n  \"id\": \"284f1eae-1189-4f0c-936e-9221492076bd\",\n  \"name\": \"Decorations\",\n  \"event_id\": \"395e889d-8b38-45c9-b786-48427c64786a\",\n  \"cost\": 100,\n  \"purchased\": false,\n  \"notes\": \"none\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/shoppingRoutes.js",
+    "groupTitle": "Shopping"
+  },
+  {
+    "type": "get",
+    "url": "/api/shopping/:eventId",
+    "title": "Get Event Shopping Items",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "eventId",
+            "description": "<p>Id of event to get shopping items for</p>"
+          }
+        ]
+      }
+    },
+    "name": "Get",
+    "group": "Shopping",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "items",
+            "description": "<p>List with objects of shopping items</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"items\": [\n    {\n      \"id\": \"284f1eae-1189-4f0c-936e-9221492076bd\",\n      \"name\": \"Decorations\",\n      \"event_id\": \"395e889d-8b38-45c9-b786-48427c64786a\",\n      \"cost\": 100,\n      \"purchased\": false,\n      \"notes\": \"none\"\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/shoppingRoutes.js",
+    "groupTitle": "Shopping"
+  },
+  {
+    "type": "put",
+    "url": "/api/shopping/:itemId",
+    "title": "Update A Shopping Item",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "itemId",
+            "description": "<p>Id of item to update</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Body:",
+          "content": "{\n\t \"name\": \"Cutlery\",\n\t \"notes\": null,\n\t \"purchased\": false,\n\t \"cost\": 100,\n  \"event_id\": \"c4514ee7-fca7-4620-b25f-3b2ead42cf73\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "name": "Update",
+    "group": "Shopping",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "event",
+            "description": "<p>Object with item data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"updated\": {\n    \"id\": \"284f1eae-1189-4f0c-936e-9221492076bd\",\n    \"name\": \"Cutlery\",\n    \"event_id\": \"c4514ee7-fca7-4620-b25f-3b2ead42cf73\",\n    \"cost\": 100,\n    \"purchased\": false,\n    \"notes\": null\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/shoppingRoutes.js",
+    "groupTitle": "Shopping"
+  },
+  {
+    "type": "post",
+    "url": "/api/shopping/:eventId",
+    "title": "Create A Todo Item",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "eventId",
+            "description": "<p>Id of event to create todo item for</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Body:",
+          "content": "{\n\t\"name\": \"find venue\",\n\t\"notes\": null,\n\t\"completed\": false\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "name": "Create",
+    "group": "Todo",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "event",
+            "description": "<p>Object with item data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 201 Created\n{\n  \"id\": \"6ff0c0bd-8615-4c23-8df9-cefe48d5a7c2\",\n  \"name\": \"Find Venue\",\n  \"notes\": null,\n  \"completed\": false,\n  \"event_id\": \"395e889d-8b38-45c9-b786-48427c64786a\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/toDoRoutes.js",
+    "groupTitle": "Todo"
+  },
+  {
+    "type": "get",
+    "url": "/api/shopping/:eventId",
+    "title": "Get Events' Todo Items",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "eventId",
+            "description": "<p>Id of event to get todo items for</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Body:",
+          "content": "{\n\t\"name\": \"find venue\",\n\t\"notes\": null,\n\t\"completed\": true\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "name": "Get",
+    "group": "Todo",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "event",
+            "description": "<p>Object with item data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 200 OK\n[\n  {\n  \"id\": \"6ff0c0bd-8615-4c23-8df9-cefe48d5a7c2\",\n  \"name\": \"Find Venue\",\n  \"notes\": null,\n  \"completed\": false,\n  \"event_id\": \"395e889d-8b38-45c9-b786-48427c64786a\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/toDoRoutes.js",
+    "groupTitle": "Todo"
+  },
+  {
+    "type": "put",
+    "url": "/api/todo/:itemId",
+    "title": "Update A Todo Item",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "itemId",
+            "description": "<p>Id of item to update</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Body:",
+          "content": "{\n  \"name\": \"Find Venue\",\n  \"notes\": null,\n  \"completed\": true,\n  \"eventId\": \"395e889d-8b38-45c9-b786-48427c64786a\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "name": "Update",
+    "group": "Todo",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "event",
+            "description": "<p>Object with item data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"updated\": {\n  \"id\": \"6ff0c0bd-8615-4c23-8df9-cefe48d5a7c2\",\n  \"name\": \"Find Venue\",\n  \"notes\": null,\n  \"completed\": true,\n  \"event_id\": \"395e889d-8b38-45c9-b786-48427c64786a\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./routes/toDoRoutes.js",
+    "groupTitle": "Todo"
   }
 ] });

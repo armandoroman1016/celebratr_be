@@ -190,19 +190,19 @@ router.get('/:userId', validateToken, ( req, res ) => {
  *
  * @apiParamExample Example Body:
  * {
- *     name: "Event Name",
- *     date: "2020-02-28",
- *     startTime: "4 : 00 PM"`,
- *     endTime:  "12 : 00 AM",
- *     budget: 3000,
- *     location: "Event Location",
- *     address: "2020 Walnut Ave",
- *     private: true,
- *     adultGuests: 30,
- *     childGuests: 20,
- *     backgroundColor: null,  
- *     theme: null,
- *     hostId: "f97ccc1e-c543-42ac-84d8-cbdab63f9a1d"
+ *     "name": "Event Name",
+ *     "date": "2020-02-28",
+ *     "startTime": "4 : 00 PM"`,
+ *     "endTime":  "12 : 00 AM",
+ *     "budget": 3000,
+ *     "location": "Event Location",
+ *     "address": "2020 Walnut Ave",
+ *     "private": true,
+ *     "adultGuests": 30,
+ *     "childGuests": 20,
+ *     "backgroundColor": null,  
+ *     "theme": null,
+ *     "hostId": "f97ccc1e-c543-42ac-84d8-cbdab63f9a1d"
  * }
  *
  * @apiSuccess {Object} event Object with event data
