@@ -2,9 +2,9 @@
 
 function packetCleanup(packet){
 
-    for (const key in packet){
+    for (let key in packet){
         if(key === undefined || key === '' || key === null){
-            delete key
+            delete packet[key]
         }
     }
 

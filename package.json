@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env DB_ENV=testing jest --watch",
+    "test": "cross-env DB_ENV=testing NODE_ENV=testing jest --watch",
     "server": "nodemon ./index.js",
     "start": "node ./index.js",
     "docs": "apidoc -i ./ -e node_modules -o ./docs"
@@ -29,8 +29,9 @@
     "apidoc": "^0.18.0",
     "cross-env": "^6.0.3",
     "jest": "^24.9.0",
+    "mocha": "^7.2.0",
     "nodemon": "^2.0.1",
-    "sqlite3": "^4.1.0",
+    "sqlite3": "^4.2.0",
     "supertest": "^4.0.2"
   }
 }
