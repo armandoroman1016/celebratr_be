@@ -20,6 +20,9 @@ exports.up = function(knex) {
         user
             .string('password')
             .notNullable()
+        user
+            .string('type')
+            .defaultTo('user')
     })
     .createTable('events', (event) => {
         event

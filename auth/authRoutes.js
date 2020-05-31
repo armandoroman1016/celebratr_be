@@ -6,6 +6,11 @@ const Users = require('../helpers/authHelpers')
 const generateToken = require('../middleware/generateToken')
 const capitalize = require('../utils/capitalize')
 
+router.get('/', (req, res) => {
+    return Users.find().then( users => {
+        res.status(200).json(users)
+    }).catch(err => res.status(500).json(err))
+})
 
 /**
  * @api {post} /api/auth/register Register Request
@@ -55,18 +60,11 @@ router.post('/register', ( req, res ) => {
 
                     // else register and submit user data
                 }else{
-                    
-                    const hashedPass = bcrypt.hashSync(packet.password, 14)
-                    packet.password = hashedPass
-
-                    console.log('newUser', packet)
-
                     // normalizing names
                     packet.firstName = capitalize(packet.firstName.trim())
                     packet.lastName = capitalize(packet.lastName.trim())
-
                     const id = uuid()
-
+                    
                     finalPacket = {
                         id: id,
                         email: packet.email,
@@ -75,15 +73,17 @@ router.post('/register', ( req, res ) => {
                         password: packet.password
                     }
 
-                    console.log(finalPacket)
+                    bcrypt.genSalt(14, (err, salt) => {
+                        bcrypt.hash(finalPacket.password, salt, (err, hash) => {
+                            finalPacket.password = hash
+                            add(finalPacket)
+                        });
+                    });
 
-                    for(key in finalPacket){
-                        console.log(`type of ${key}: `, typeof(key))
-                    }
-                    
-                    Users.add(finalPacket)
+
+                    const add = (data) => {
+                        Users.add(data)
                         .then(newUser => {
-                            console.log('newUser', newUser)
                             if(newUser){
                                 const token = generateToken(newUser)
                                 delete newUser.password
@@ -93,6 +93,7 @@ router.post('/register', ( req, res ) => {
                             }
                         })
                         .catch(err => res.status(500))
+                    }
                 }
             })
             .catch(err => res.status(500).json({message: 'Unexpected error occurred'}))
@@ -139,17 +140,18 @@ router.post('/login', (req, res) => {
         Users.findByEmail(email)
             .then( user => {
 
-                if(!user || !bcrypt.compareSync(password, user.password)){
-                    res.status(406).json({message: 'Invalid email or password'})
-
-                }else if( user && bcrypt.compareSync(password, user.password)){
-
-                    const token = generateToken(user)
-                    delete user.password
-
-                    res.status(200).json({user: user, token: token})
-                }
-
+                return bcrypt.compare(password, user.password).then((result) => {
+                    if(!user || !result){
+                        res.status(406).json({message: 'Invalid email or password'})
+                    }else{
+                        const token = generateToken(user)
+                        delete user.password
+                        res.status(200).json({user: user, token: token})
+                    }
+                })
+            })
+            .catch(err => {
+                res.status(406).json({message: 'Invalid email or password'})
             })
     }
 })
