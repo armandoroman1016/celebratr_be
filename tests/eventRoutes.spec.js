@@ -23,7 +23,6 @@ let testRegister = {
 }
 
 describe("eventRoutes.js", () => {
-
     beforeEach(async () => {
         await db('shopping_item').truncate();
         await db('vendors').truncate();
@@ -70,5 +69,36 @@ describe("eventRoutes.js", () => {
             expect(result.status).toBe(401)
             expect(result.body.message).toBe("Invalid Token")
         });
+    });
+    it("doesn\'t create event with missing fields", async() => {
+        const url = `/api/events/${registered.body.user.id}`
+
+        delete eventInfo.address
+
+        const result  = await request(server).post(url).send(eventInfo).set({
+            "Authorization": registered.body.token,
+            "Content-Type": "application/json"
+        })
+
+        expect(result.status).toBe(400)
+        expect(result.body.message).toBe('Missing required fields')
+    });
+
+    describe("GET /:userID", () => {
+
+        it("fetches events", async() => {
+
+            const url = `/api/events/${registered.body.user.id}`
+            await request(server).post(url).send(eventInfo).set({
+                "Authorization": registered.body.token,
+                "Content-Type": "application/json"
+            })
+
+            const result = await request(server).get(url).set({
+                "Authorization": registered.body.token
+            })
+
+            expect(result.status).toBe(200)
+        })
     })
 })
