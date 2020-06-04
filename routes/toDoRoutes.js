@@ -1,9 +1,9 @@
-const router = require('express').Router()
-const ToDo = require('../helpers/toDoHelpers')
-const capitalize = require('../utils/capitalize')
-const uuid = require('uuid/v4')
-const packetCleanup = require('../utils/packetCleanup')
-const validateToken = require('../middleware/validateToken')
+const router = require("express").Router();
+const ToDo = require("../helpers/toDoHelpers");
+const capitalize = require("../utils/capitalize");
+const uuid = require("uuid/v4");
+const packetCleanup = require("../utils/packetCleanup");
+const validateToken = require("../middleware/validateToken");
 
 // router.get('/', validateToken, (req, res) => {
 
@@ -20,7 +20,7 @@ const validateToken = require('../middleware/validateToken')
 /**
  * @api {post} /api/shopping/:eventId Create A Todo Item
  * @apiParam {String} eventId Id of event to create todo item for
- * 
+ *
  * @apiName Create
  * @apiGroup Todo
  *
@@ -44,63 +44,58 @@ const validateToken = require('../middleware/validateToken')
  * }
  */
 
-router.post('/:eventId', validateToken, (req, res) => {
+router.post("/:eventId", validateToken, (req, res) => {
+  const { eventId } = req.params;
 
-    const { eventId } = req.params
+  let toDoBody = req.body;
 
-    let toDoBody = req.body
+  if (toDoBody.name) {
+    toDoBody.name = capitalize(toDoBody.name);
 
-    if(toDoBody.name){
+    const id = uuid();
 
-        toDoBody.name = capitalize(toDoBody.name)
+    toDoBody.completed = toDoBody.completed ? 1 : 0;
 
-        const id = uuid()
+    let packet = {
+      id: id,
+      name: toDoBody.name,
+      notes: toDoBody.notes,
+      completed: toDoBody.completed,
+      event_id: eventId,
+    };
 
-        toDoBody.completed = toDoBody.completed ? 1 : 0
+    packet.name = capitalize(packet.name);
 
-        let packet = {
-            id: id,
-            name: toDoBody.name,
-            notes: toDoBody.notes,
-            completed: toDoBody.completed,
-            event_id: eventId
+    packet = packetCleanup(packet);
+
+    ToDo.add(packet)
+      .then((todo) => {
+        if (todo) {
+          res.status(201).json(todo);
+        } else {
+          res.status(500);
         }
-
-        packet.name = capitalize(packet.name)
-
-        packet = packetCleanup(packet)
-
-        ToDo.add(packet)
-            .then((todo) => {
-                console.log('todo', todo)
-                if(todo){
-                    res.status(201).json(todo)
-                }
-                else{
-                    res.status(500)
-                }
-            })
-            .catch(err => res.status(500))
-    }else{
-        res.status(400).json({message: 'To do list item name is required'})
-    }
-})
-
+      })
+      .catch((err) => res.status(500));
+  } else {
+    res.status(400).json({ message: "To do list item name is required" });
+  }
+});
 
 /**
  * @api {get} /api/shopping/:eventId Get Events' Todo Items
  * @apiParam {String} eventId Id of event to get todo items for
- * 
+ *
  * @apiName Get
  * @apiGroup Todo
- * 
+ *
  * @apiParamExample Example Body:
  * {
  * 	"name": "find venue",
  * 	"notes": null,
  * 	"completed": true
  * }
- * 
+ *
  * @apiSuccess {Object} event Object with item data
  *
  * @apiSuccessExample Successful Response:
@@ -116,41 +111,32 @@ router.post('/:eventId', validateToken, (req, res) => {
  * ]
  */
 
-router.get('/:eventId', validateToken, (req, res) => {
+router.get("/:eventId", validateToken, (req, res) => {
+  const { eventId } = req.params;
 
-    const { eventId } = req.params
+  ToDo.findByEventId(eventId)
+    .then((todos) => {
+      if (todos) {
+        for (let i = 0; i < todos.length; i++) {
+          if (todos[i].completed) {
+            todos[i].completed = true;
+          } else {
+            todos[i].completed = false;
+          }
+        }
 
-    ToDo.findByEventId(eventId)
-        .then(todos => {
-
-            if(todos){
-
-                for(let i = 0; i < todos.length; i++){
-
-                    if (todos[i].completed){
-                        todos[i].completed = true
-
-                    }else{
-                        todos[i].completed = false
-                    }
-
-                }
-
-                res.status(200).json(todos)
-
-            }else{
-
-                res.status(404).json({message: 'Invalid event id'})
-            }
-        })
-        .catch( err => res.status(500))
-})
-
+        res.status(200).json(todos);
+      } else {
+        res.status(404).json({ message: "Invalid event id" });
+      }
+    })
+    .catch((err) => res.status(500));
+});
 
 /**
  * @api {put} /api/todo/:itemId Update A Todo Item
  * @apiParam {String} itemId Id of item to update
- * 
+ *
  * @apiName Update
  * @apiGroup Todo
  *
@@ -177,64 +163,54 @@ router.get('/:eventId', validateToken, (req, res) => {
  * }
  */
 
-router.put('/:id', validateToken, ( req, res ) => {
+router.put("/:id", validateToken, (req, res) => {
+  const { id } = req.params;
 
-    const { id } = req.params
+  let toDoBody = req.body;
 
-    let toDoBody = req.body
+  if (toDoBody.name) {
+    toDoBody.name = capitalize(toDoBody.name);
 
-    if(toDoBody.name){
+    toDoBody.completed = toDoBody.completed ? 1 : 0;
 
-        toDoBody.name = capitalize(toDoBody.name)
+    let packet = {
+      id: id,
+      name: toDoBody.name,
+      notes: toDoBody.notes,
+      completed: toDoBody.completed,
+      event_id: toDoBody.eventId,
+    };
 
-        toDoBody.completed = toDoBody.completed ? 1 : 0
+    packet.name = capitalize(packet.name);
 
-        let packet = {
-            id: id,
-            name: toDoBody.name,
-            notes: toDoBody.notes,
-            completed: toDoBody.completed,
-            event_id: toDoBody.eventId
+    packet = packetCleanup(packet);
+
+    ToDo.update(id, packet)
+      .then((todo) => {
+        if (todo) {
+          res.status(200).json({ updated: todo });
+        } else {
+          res.status(500);
         }
+      })
+      .catch((err) => res.status(500));
+  } else {
+    res.status(400).json({ message: "To do list item name is required" });
+  }
+});
 
-        packet.name = capitalize(packet.name)
+router.delete("/:id", validateToken, (req, res) => {
+  const { id } = req.params;
 
-        packet = packetCleanup(packet)
+  ToDo.remove(id)
+    .then((removed) => {
+      if (removed) {
+        res.status(204).json(removed);
+      } else {
+        res.status(500).json({ message: "unable to remove resource" });
+      }
+    })
+    .catch((err) => res.status(500).json(err));
+});
 
-        ToDo.update(id, packet)
-            .then((todo) => {
-
-                if(todo){
-                    res.status(200).json({updated: todo})
-                }else{
-                    res.status(500)
-                }
-
-            })
-            .catch(err => res.status(500))
-
-    }else{
-
-        res.status(400).json({message: 'To do list item name is required'})
-    }
-})
-
-router.delete('/:id', validateToken, (req, res) => {
-
-    const { id } = req.params
-
-    ToDo.remove(id)
-        .then( removed => {
-
-            if(removed){
-                res.status(204).json(removed)
-            }else{
-                res.status(500).json({message: 'unable to remove resource'})
-            }
-
-        })
-        .catch( err => res.status(500).json(err))
-
-})
-
-module.exports = router
+module.exports = router;
