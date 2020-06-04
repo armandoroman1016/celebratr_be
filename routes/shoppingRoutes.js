@@ -41,8 +41,6 @@ router.post('/:eventId', validateToken, (req, res) => {
     
     let values = req.body
 
-    console.log('values', values)
-
     // if name is missing from request body return 400 message
     if( !values.name ){
         res.status(400).json({message: 'missing a name for the shopping item'})
