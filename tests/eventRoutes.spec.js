@@ -24,16 +24,12 @@ let testRegister = {
 
 describe("eventRoutes.js", () => {
     beforeEach(async () => {
-        await db('shopping_item').truncate();
-        await db('vendors').truncate();
-        await db('to_do').truncate();
-        await db('guests').truncate();
         await db('events').truncate();
         await db('users').truncate();
     });
 
     let registered;
-    beforeAll(async () =>{
+    beforeAll(async() =>{
         registered = await request(server).post("/api/auth/register").send(testRegister)
     })
     
@@ -99,6 +95,26 @@ describe("eventRoutes.js", () => {
             })
 
             expect(result.status).toBe(200)
+        });
+        it("doesn't fetch events with missing token or invalid token", async() => {
+            const url = `/api/events/${registered.body.user.id}`
+            await request(server).post(url).send(eventInfo).set({
+                "Authorization": registered.body.token,
+                "Content-Type": "application/json"
+            })
+
+            const result = await request(server).get(url)
+
+            expect(result.status).toBe(400)
+            expect(result.body.message).toBe("No Token Provided")
+
+            const result2 = await request(server).get(url).set({
+                "Authorization": "My.Slick.Token"
+            })
+
+            expect(result2.status).toBe(401)
         })
     })
+
+    
 })

@@ -13,11 +13,6 @@ let testRegister = {
 
 describe("authRoutes.js", () => {
     beforeEach(async () => {
-        await db('shopping_item').truncate();
-        await db('vendors').truncate();
-        await db('to_do').truncate();
-        await db('guests').truncate();
-        await db('events').truncate();
         await db('users').truncate();
     });
 
@@ -26,13 +21,13 @@ describe("authRoutes.js", () => {
             let results = await request(server).post("/api/auth/register").send(testRegister)
             expect(results.status).toBe(201)
         });
-        it("creates a new user", async () => {
+        it("creates a new user", async() => {
             let users = await db("users")
             expect(users).toHaveLength(0)
 
             await request(server).post("/api/auth/register").send(testRegister)
             
-            users = await db("users")
+            users = await db("users");
 
             expect(users).toHaveLength(1)
         });
