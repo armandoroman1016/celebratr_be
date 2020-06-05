@@ -1,7 +1,8 @@
-require('dotenv').config()
+require("dotenv").config();
 
-const app = require('./api/server')
-const defaults = require('./config/defaults')
+const app = require("./api/server");
+const defaults = require("./config/defaults");
 
-
-app.listen(defaults.port, () => console.log(`**** Server is listening on port ${defaults.port}****`))
+app.listen(defaults.port, () =>
+  console.log(`**** Server is listening on port ${defaults.port}****`)
+);

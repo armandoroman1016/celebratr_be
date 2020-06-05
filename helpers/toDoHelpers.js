@@ -1,65 +1,40 @@
-const db = require('../data/dbConfig')
+const db = require("../data/dbConfig");
 
 module.exports = {
+  find,
+  findByEventId,
+  add,
+  update,
+  remove,
+  findByItemId,
+};
 
-    find,
-    findByEventId,
-    add,
-    update,
-    remove,
-    findByItemId
-
+function find() {
+  return db("to_do");
 }
 
-function find(){
-
-    return db('to_do');
-
+function findByEventId(eventId) {
+  return db("to_do").where({ event_id: eventId });
 }
 
-function findByEventId(eventId){
-
-    return db('to_do')
-        .where({event_id: eventId});
-
+function findByItemId(id) {
+  return db("to_do").where({ id: id }).first();
 }
 
-function findByItemId(id){
+async function add(values) {
+  const [newToDo] = await db("to_do").insert(values).returning("*");
 
-    return db('to_do')
-    .where({id: id})
-    .first();
-
+  return newToDo;
 }
 
-async function add(values){
+async function update(id, values) {
+  await db("to_do").where({ id: id }).update(values);
 
+  const item = await findByItemId(id);
 
-    const [newToDo] = await db('to_do')
-        .insert(values)
-        .returning('*');
-    
-    return newToDo
-
+  return item;
 }
 
-async function update(id, values){
-
-
-    await db('to_do')
-        .where({id: id})
-        .update(values);
-
-    const item = await findByItemId(id)
-
-    return item
-
-}
-
-function remove(id){
-
-    return db('to_do')
-        .where({id: id})
-        .delete();
-
+function remove(id) {
+  return db("to_do").where({ id: id }).delete();
 }
