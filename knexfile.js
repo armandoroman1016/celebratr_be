@@ -1,40 +1,40 @@
 module.exports = {
   development: {
-    client: 'pg',
+    client: "pg",
     useNullAsDefault: true,
-    connection: 'postgres://xwvjwquj:qav8VzSCp5-82a70hJohHiBy_6N6wQum@rajje.db.elephantsql.com:5432/xwvjwquj', 
+    connection:
+      "postgres://xwvjwquj:qav8VzSCp5-82a70hJohHiBy_6N6wQum@rajje.db.elephantsql.com:5432/xwvjwquj",
     useNullAsDefault: true,
-    "pool": {
-      "min":0,
-      "max":10
+    pool: {
+      min: 0,
+      max: 10,
     },
     migrations: {
-      directory: './data/migrations'
+      directory: "./data/migrations",
     },
     seeds: {
-      directory: './data/seeds'
-    }
+      directory: "./data/seeds",
+    },
   },
   testing: {
-    client: 'sqlite3',
+    client: "sqlite3",
     connection: {
-      filename: './data/test.db3'
+      filename: "./data/test.db3",
     },
     useNullAsDefault: true,
     migrations: {
-      directory: './data/migrations',
-    }
+      directory: "./data/migrations",
+    },
   },
 
   production: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL,
     migrations: {
-      directory: './data/migrations'
+      directory: "./data/migrations",
     },
     seeds: {
-      directory: './data/seeds'
-    }
-    }
+      directory: "./data/seeds",
+    },
+  },
 };
-

@@ -1,16 +1,17 @@
+const bcrypt = require("bcryptjs");
+const router = require("express").Router();
+const uuid = require("uuid/v4");
+const Users = require("../helpers/authHelpers");
+const generateToken = require("../middleware/generateToken");
+const capitalize = require("../utils/capitalize");
 
-const bcrypt = require('bcryptjs')
-const router = require('express').Router()
-const uuid = require('uuid/v4')
-const Users = require('../helpers/authHelpers')
-const generateToken = require('../middleware/generateToken')
-const capitalize = require('../utils/capitalize')
-
-router.get('/', (req, res) => {
-    return Users.find().then( users => {
-        res.status(200).json(users)
-    }).catch(err => res.status(500).json(err))
-})
+router.get("/", (req, res) => {
+  return Users.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => res.status(500).json(err));
+});
 
 /**
  * @api {post} /api/auth/register Register Request
@@ -37,68 +38,74 @@ router.get('/', (req, res) => {
  *    "email": "John",
  *    "first_name": "Doe",
  *    "last_name": "example1@example1.com",
- *  }, 
+ *  },
  *  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
  * }
  */
 
-router.post('/register', ( req, res ) => {
-    
-    let packet = req.body
-    // if any required fields are missing respond with 400 status code
-    if (!packet.firstName || !packet.lastName || !packet.password || !packet.email){
-        res.status(400).json({message: 'Missing at least one required field'})
+router.post("/register", (req, res) => {
+  let packet = req.body;
+  // if any required fields are missing respond with 400 status code
+  if (
+    !packet.firstName ||
+    !packet.lastName ||
+    !packet.password ||
+    !packet.email
+  ) {
+    res.status(400).json({ message: "Missing at least one required field" });
 
-        // else try to register user
-    } else {
-        
-        Users.findByEmail(packet.email)
-            .then( user => {
-                // if account is created with email provided then respond with 403 status code
-                if(user){
-                    res.status(403).json({message: 'Email is already in use'})
+    // else try to register user
+  } else {
+    Users.findByEmail(packet.email)
+      .then((user) => {
+        // if account is created with email provided then respond with 403 status code
+        if (user) {
+          res.status(403).json({ message: "Email is already in use" });
 
-                    // else register and submit user data
-                }else{
-                    // normalizing names
-                    packet.firstName = capitalize(packet.firstName.trim())
-                    packet.lastName = capitalize(packet.lastName.trim())
-                    const id = uuid()
-                    
-                    finalPacket = {
-                        id: id,
-                        email: packet.email,
-                        first_name: packet.firstName,
-                        last_name: packet.lastName,
-                        password: packet.password
-                    }
+          // else register and submit user data
+        } else {
+          // normalizing names
+          packet.firstName = capitalize(packet.firstName.trim());
+          packet.lastName = capitalize(packet.lastName.trim());
+          const id = uuid();
 
-                    bcrypt.genSalt(14, (err, salt) => {
-                        bcrypt.hash(finalPacket.password, salt, (err, hash) => {
-                            finalPacket.password = hash
-                            add(finalPacket)
-                        });
-                    });
+          finalPacket = {
+            id: id,
+            email: packet.email,
+            first_name: packet.firstName,
+            last_name: packet.lastName,
+            password: packet.password,
+          };
 
+          bcrypt.genSalt(14, (err, salt) => {
+            bcrypt.hash(finalPacket.password, salt, (err, hash) => {
+              finalPacket.password = hash;
+              add(finalPacket);
+            });
+          });
 
-                    const add = (data) => {
-                        Users.add(data)
-                        .then(newUser => {
-                            if(newUser){
-                                const token = generateToken(newUser)
-                                delete newUser.password
-                                res.status(201).json({user: newUser, token: token})
-                            }else{
-                                res.status(500).json({message: 'Unexpected error occurred, try logging in'})
-                            }
-                        })
-                        .catch(err => res.status(500))
-                    }
+          const add = (data) => {
+            Users.add(data)
+              .then((newUser) => {
+                if (newUser) {
+                  const token = generateToken(newUser);
+                  delete newUser.password;
+                  res.status(201).json({ user: newUser, token: token });
+                } else {
+                  res.status(500).json({
+                    message: "Unexpected error occurred, try logging in",
+                  });
                 }
-            })
-            .catch(err => res.status(500).json({message: 'Unexpected error occurred'}))
-    }
-})
+              })
+              .catch((err) => res.status(500));
+          };
+        }
+      })
+      .catch((err) =>
+        res.status(500).json({ message: "Unexpected error occurred" })
+      );
+  }
+});
 
 /**
  * @api {post} /api/auth/login Login Request
@@ -128,32 +135,28 @@ router.post('/register', ( req, res ) => {
  * }
  */
 
-router.post('/login', (req, res) => {
-    const { email, password } = req.body
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
-    if (!email || !password){
+  if (!email || !password) {
+    res.status(400).json({ message: "Missing required credentials." });
+  } else {
+    Users.findByEmail(email)
+      .then((user) => {
+        return bcrypt.compare(password, user.password).then((result) => {
+          if (!user || !result) {
+            res.status(406).json({ message: "Invalid email or password" });
+          } else {
+            const token = generateToken(user);
+            delete user.password;
+            res.status(200).json({ user: user, token: token });
+          }
+        });
+      })
+      .catch((err) => {
+        res.status(406).json({ message: "Invalid email or password" });
+      });
+  }
+});
 
-        res.status(400).json({message: 'Missing required credentials.'})
-
-    } else {
-
-        Users.findByEmail(email)
-            .then( user => {
-
-                return bcrypt.compare(password, user.password).then((result) => {
-                    if(!user || !result){
-                        res.status(406).json({message: 'Invalid email or password'})
-                    }else{
-                        const token = generateToken(user)
-                        delete user.password
-                        res.status(200).json({user: user, token: token})
-                    }
-                })
-            })
-            .catch(err => {
-                res.status(406).json({message: 'Invalid email or password'})
-            })
-    }
-})
-
-module.exports = router
+module.exports = router;
