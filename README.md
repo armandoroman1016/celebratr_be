@@ -70,4 +70,4 @@ These contribution guidelines have been adapted from [this good-Contributing.md-
 
 ## Documentation
 
-See [Frontend Documentation](https://github.com/Lambda-School-Labs/mission-control-fe/blob/master/README.md) for details on the frontend of our project.
+See [Frontend Documentation](https://github.com/armandoroman1016/party_planner_fe) for details on the frontend of our project.
