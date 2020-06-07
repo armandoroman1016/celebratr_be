@@ -2,7 +2,7 @@
 
 ### API documentation [here](https://party-planner-back-end.herokuapp.com/docs)<br>
 
-#### Backend delpoyed on [Heroku](https://party-planner-back-end.herokuapp.com/) <br>
+#### Application delpoyed on [Heroku](https://party-planner-back-end.herokuapp.com/) <br>
 
 ## Getting started
 
