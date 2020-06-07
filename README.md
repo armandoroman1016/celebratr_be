@@ -22,6 +22,86 @@ To get the server running locally:
 - To update the documentation for the API **npm run docs** 
 
 # Data Model
+---
+#### Users
+
+```
+{
+  id: STRING
+  email: STRING
+  first_name:STRING
+  last_name:STRING
+  password: STRING
+  type: STRING
+}
+```
+
+#### EVENTS
+
+```
+{
+  id: STRING
+  name: STRING
+  date: STRING
+  start_time:STRING
+  end_time:STRING
+  budget: INTEGER
+  adult_guests: INTEGER
+  child_guests: INTEGER
+  background_color: STRING
+  theme: STRING
+  host_id: STRING foreign-key
+}
+```
+
+#### GUESTS
+
+```
+{
+  id: STRING
+  event_id: STRING foreign-key
+  user_id: STRING foreign-key
+}
+```
+
+#### TO_DO
+
+```
+{
+  id: STRING
+  name: STRING
+  notes: STRING
+  completed:BOOLEAN
+  event_id: STRING foreign-key
+}
+```
+
+#### VENDORS
+
+```
+{
+  id: STRING
+  cost: INTEGER
+  notes: STRING
+  purchased: BOOLEAN
+  event_id: STRING foreign-key
+}
+```
+
+#### SHOPPING_ITEM
+
+```
+{
+  id: STRING
+  name: STRING
+  event_id: STRING foreign-key
+  purchased: BOOLEAN
+  cost: INTEGER
+  notes: STRING
+}
+```
+
+---
 
 
 ## Environment Variables
