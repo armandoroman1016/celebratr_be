@@ -93,7 +93,8 @@ router.post("/register", (req, res) => {
                   res.status(201).json({ user: newUser, token: token });
                 } else {
                   res.status(500).json({
-                    message: "Unexpected error occurred, try logging in",
+                    message:
+                      "Whoops we don't know what went wrong. Try logging in",
                   });
                 }
               })
@@ -102,7 +103,9 @@ router.post("/register", (req, res) => {
         }
       })
       .catch((err) =>
-        res.status(500).json({ message: "Unexpected error occurred" })
+        res.status(500).json({
+          message: "Whoops we don't know what went wrong. Try logging in",
+        })
       );
   }
 });
